@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    username: root
+    password: mz462913
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.102.127.38:3306/imooc_security?useSSL=false
+  redis:
+    host: candy1874.xyz
+#    关闭SpringSession
+  session:
+    store-type: none
+
+
+## 关闭 SpringSecurity 验证
+security:
+  basic:
+    enabled: true
+
+imooc:
+  security:
+    browser:
+      loginPage: /demo-signin.html

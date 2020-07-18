@@ -1,0 +1,3 @@
+com\candy\mz\service\MyUserDetailsService.class
+com\candy\mz\controller\BrowserSecurityController.class
+com\candy\mz\support\SimpleResponse.class
