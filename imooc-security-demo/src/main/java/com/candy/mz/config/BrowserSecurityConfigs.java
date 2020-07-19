@@ -1,5 +1,7 @@
 package com.candy.mz.config;
 
+import com.candy.mz.properties.SecurityProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,13 +9,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 /**
  * @author: candy
  * @date: 2020/7/18
  * @description :
  **/
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
+
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
+
+    public void info() {
+        System.out.printf(securityProperties.toString());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,8 +40,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 /*对此不需要进行身份认证*/
                 .antMatchers(
-                    "/authentication/require",
-                        "/login.html"
+                        "/authentication/require",
+                        securityProperties.getBrowser().getLoginPage()
                 ).permitAll()
                 /*任何的请求*/
                 .anyRequest()

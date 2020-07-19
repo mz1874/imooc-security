@@ -1,8 +1,11 @@
 package com.candy.mz.controller;
 
+import com.candy.mz.properties.BrowserSecurityProperties;
+import com.candy.mz.properties.SecurityProperties;
 import com.candy.mz.support.SimpleResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -32,6 +35,9 @@ public class BrowserSecurityController {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
 
     /**
      * 需要身份认证的话跳转到这里
@@ -47,8 +53,7 @@ public class BrowserSecurityController {
             String redirectUrl = cacheRequest.getRedirectUrl();
             logger.info(" 引发跳转的URL ：{}", redirectUrl);
             if (StringUtils.endsWithIgnoreCase(redirectUrl,".html")) {
-                redirectStrategy.sendRedirect(request,response,
-                        "/login.html"
+                redirectStrategy.sendRedirect(request,response,securityProperties.getBrowser().getLoginPage()
                 );
             }
         }
