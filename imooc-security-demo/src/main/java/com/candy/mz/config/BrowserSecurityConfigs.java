@@ -1,7 +1,10 @@
 package com.candy.mz.config;
 
+import com.candy.mz.authentication.ImoocAuthenticationErrorHandler;
+import com.candy.mz.authentication.ImoocAuthenticationSuccessHandler;
 import com.candy.mz.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,10 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private ImoocAuthenticationSuccessHandler imoocAuthenticationSuccessHandler;
+
 
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private ImoocAuthenticationErrorHandler imoocAuthenticationErrorHandler;
 
     public void info() {
         System.out.printf(securityProperties.toString());
@@ -33,6 +41,9 @@ public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/user/login")
+                /*登录成功后的控制器*/
+                .successHandler(imoocAuthenticationSuccessHandler)
+                .failureHandler(imoocAuthenticationErrorHandler)
         /*HttpBasic方式认证*/
 //        http.httpBasic()
                 .and()

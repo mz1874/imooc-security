@@ -16,7 +16,8 @@ security:
   basic:
     enabled: true
 
-#imooc:
-#  security:
-#    browser:
-#      loginPage: /demo-signin.html
+imooc:
+  security:
+    browser:
+      loginPage: /demo-signin.html
+      loginType: JSON
