@@ -4,6 +4,7 @@ import com.candy.mz.authentication.ImoocAuthenticationErrorHandler;
 import com.candy.mz.authentication.ImoocAuthenticationSuccessHandler;
 import com.candy.mz.properties.SecurityProperties;
 import com.candy.mz.properties.filter.VerificationFilter;
+import com.candy.mz.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 
 /**
@@ -37,6 +39,12 @@ public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
         System.out.printf(securityProperties.toString());
     }
 
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -51,6 +59,8 @@ public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
                 .successHandler(imoocAuthenticationSuccessHandler)
                 .failureHandler(imoocAuthenticationErrorHandler)
         /*HttpBasic方式认证*/
+                .and().rememberMe().tokenRepository(persistentTokenRepository).tokenValiditySeconds(60)
+                .userDetailsService(userDetailsService)
 //        http.httpBasic()
                 .and()
                 /*对请求进行授权*/
