@@ -2,6 +2,7 @@ package com.candy.mz.authentication;
 
 import com.candy.mz.properties.SecurityProperties;
 import com.candy.mz.properties.enums.LoginType;
+import com.candy.mz.support.SimpleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class ImoocAuthenticationErrorHandler extends SimpleUrlAuthenticationFail
         if (LoginType.JSON.equals(securityProperties.getBrowser().getLoginType())) {
             response.setContentType("application/json;charset=utf-8");
             response.setStatus(HttpStatus.OK.value());
-            response.getWriter().write(objectMapper.writeValueAsString(exception));
+            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(exception.getMessage())));
         }else {
             super.onAuthenticationFailure(request, response, exception);
         }

@@ -3,6 +3,7 @@ package com.candy.mz.config;
 import com.candy.mz.authentication.ImoocAuthenticationErrorHandler;
 import com.candy.mz.authentication.ImoocAuthenticationSuccessHandler;
 import com.candy.mz.properties.SecurityProperties;
+import com.candy.mz.properties.filter.VerificationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 /**
@@ -37,8 +39,12 @@ public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        VerificationFilter verificationFilter = new VerificationFilter();
+        verificationFilter.setAuthenticationFailureHandler(imoocAuthenticationErrorHandler);
         /*表单进行认证*/
-        http.formLogin()
+        http.addFilterBefore(verificationFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/user/login")
                 /*登录成功后的控制器*/
@@ -52,7 +58,8 @@ public class BrowserSecurityConfigs extends WebSecurityConfigurerAdapter {
                 /*对此不需要进行身份认证*/
                 .antMatchers(
                         "/authentication/require",
-                        securityProperties.getBrowser().getLoginPage()
+                        securityProperties.getBrowser().getLoginPage(),
+                        "/verification/code/image"
                 ).permitAll()
                 /*任何的请求*/
                 .anyRequest()
